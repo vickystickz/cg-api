@@ -1,9 +1,27 @@
+databases:
+  - name: campus-guide-db
+    databaseName: campus_guide
+    user: ademoyero
+    plan: free # Free tier: 1 GB storage, expires after 90 days
+    ipAllowList: [] # Allow connections from any IP
+
 services:
-  # A Docker web service
   - type: web
-    name: cg-app
+    name: campus-guide-api
     runtime: python
-    plan: free
-    autoDeploy: false
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    plan: free # Free tier: 512 MB RAM, spins down after 15 min inactivity
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt "
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: ENVIRONMENT
+        value: Production
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      - key: SECRET_KEY
+        generateValue: true # Render auto-generates a secure random value
+      - key: DATABASE_URL
+        # Render provides postgres:// — asyncpg requires postgresql+asyncpg://
+        # Set this manually in the Render dashboard with the correct scheme
+        sync: false
