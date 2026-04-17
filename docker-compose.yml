@@ -1,3 +1,4 @@
+
 services:
   db:
     image: postgis/postgis:16-3.4
@@ -17,8 +18,9 @@ services:
   api:
     build: .
     restart: unless-stopped
-    ports:
-      - "80:8000"
+    # Note: no ports exposed to host. Only nginx talks to it.
+    expose:
+      - "8000"
     env_file:
       - .env
     environment:
@@ -26,6 +28,16 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api
 
 volumes:
   postgres_data:
