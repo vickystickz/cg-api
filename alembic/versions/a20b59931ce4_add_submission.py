@@ -36,7 +36,7 @@ def upgrade() -> None:
                               sa.String(), nullable=False),
                     sa.Column('phone_number', sa.String(), nullable=False),
                     sa.Column('role_in_chapter', sa.String(), nullable=True),
-                    sa.Column('geometry', geoalchemy2.types.Geometry(geometry_type='POLYGON', srid=4326,
+                    sa.Column('geometry', geoalchemy2.types.Geometry(geometry_type='MULTIPOLYGON', srid=4326,
                                                                      dimension=2, from_text='ST_GeomFromEWKT', name='geometry', nullable=False), nullable=False),
                     sa.Column('picture_url', sa.String(), nullable=True),
                     sa.Column('updated_at', sa.DateTime(), nullable=True),
